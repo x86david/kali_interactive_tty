@@ -1,4 +1,4 @@
-# 📄 Advanced Interactive TTY Stabilizer## 🚀 Overview
+# 📄 Advanced Interactive TTY Overview
 This repository contains a collection of enhanced one-liners designed to transform basic, constrained shells into fully interactive TTY environments.
 Unlike a standard reverse shell, these commands enable:
 
